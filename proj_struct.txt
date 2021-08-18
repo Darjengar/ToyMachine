@@ -1,0 +1,8 @@
+MainProject
+-- program/pkg folder
+-- -- subpkg
+-- -- -- src
+-- -- -- include
+-- -- src
+-- -- include
+-- -- subpkg/module
