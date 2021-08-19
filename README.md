@@ -1,2 +1,2 @@
 # ToyMachine
-ToyMachine
+Emulator of the TOY machine.
