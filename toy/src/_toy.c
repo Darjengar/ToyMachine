@@ -1,3 +1,5 @@
+/* Author : Darjengar 08/23/2021, License: GPL 3.0 */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -57,7 +59,7 @@ void load_program(char* program)
 {
     int byte1, byte2;
     FILE *fp = fopen(program, "rb");
-    
+
     /*int prev = ftell(fp);
     fseek(fp, 0L, SEEK_END);
     int size = ftell(fp);
