@@ -1,4 +1,5 @@
 /* Author : Darjengar 08/23/2021, License: GPL 3.0 */
+/* written in ANSI C */
 
 #include <stdio.h>
 #include <stdlib.h>
