@@ -1,0 +1,4 @@
+ldaddr R2, 0xFF
+ldaddr R3, 0x02
+add R1, R2, R3
+halt
