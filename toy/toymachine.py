@@ -138,7 +138,7 @@ class MainFrame(tk.Frame):
         self.after(1, self.intro_anim1)
 
     def btnev_start_machine2(self):
-        self.canvas.itemconfigure(self.text_id, text="0000")
+        self.canvas.itemconfigure(self.text_id, text="FFFF")
         halt_flag, input_flag, output_flag = toy.start_toy()
         self.textbox["state"] = "normal"
         self.textbox.delete("1.0", tk.END)
@@ -153,6 +153,10 @@ class MainFrame(tk.Frame):
             self.btn5.state(["!disabled"])
             self.btncounter = 1
             return
+
+        if output_flag == 1:
+            value = toy.output_toy()
+            self.canvas.itemconfigure(self.text_id, text=format(value, 'X').zfill(4))
 
         if input_flag == 1:
             self.textfield.state(["!disabled"])
@@ -213,6 +217,12 @@ class MainFrame(tk.Frame):
             self.textfield.state(["!disabled"])
             self.btn2.state(["disabled"])
             self.btn7.state(["!disabled"])
+            self.btncounter += 1
+        elif output_flag == 1:
+            value = toy.output_toy()
+            self.canvas.itemconfigure(self.text_id, text=format(value, 'X').zfill(4))
+            self.btncounter += 1
+        else:
             self.btncounter += 1
 
     def btnev_stop_machine(self):

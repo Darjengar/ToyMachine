@@ -305,9 +305,20 @@ static PyObject *method_input_toy(PyObject *self, PyObject *args)
     }
 
     mem[255] = value;
+    regs[curr_instr.u1.dst] = mem[255];
+    toyflags.input_flag = 0;
 
     Py_INCREF(Py_None);
     return Py_None;
+}
+
+static PyObject *method_output_toy(PyObject *self, PyObject *args)
+{
+    if (!PyArg_ParseTuple(args, "")) {
+        return NULL;
+    }
+    toyflags.output_flag = 0;
+    return PyLong_FromLong(regs[curr_instr.u1.src]);
 }
 
 static PyMethodDef ToyMethods[] = {
@@ -327,6 +338,8 @@ static PyMethodDef ToyMethods[] = {
      "Show state of Toy Machine"},
     {"input_toy", method_input_toy, METH_VARARGS,
      "Toy Machine input function"},
+    {"output_toy", method_output_toy, METH_VARARGS,
+     "Toy Machine output function"},
     {NULL, NULL, 0, NULL}
 };
 
@@ -443,15 +456,19 @@ int exec_instr()
             if (curr_instr.u2.addr == 0xFF) {
                 toyflags.input_flag = 1;
             }
-            regs[curr_instr.u1.dst] = mem[curr_instr.u2.addr];
+            else {
+                regs[curr_instr.u1.dst] = mem[curr_instr.u2.addr];
+            }
             break;
         /* store */
         case 0x9:
             curr_instr.u1.src = (mem[pc] & 0x0F00) >> 8;
             curr_instr.u2.addr = mem[pc] & 0x00FF;
-            mem[curr_instr.u2.addr] = regs[curr_instr.u1.src];
             if (curr_instr.u2.addr == 0xFF) {
                 toyflags.output_flag = 1;
+            }
+            else {
+                mem[curr_instr.u2.addr] = regs[curr_instr.u1.src];
             }
             break;
         /* load indirect */
