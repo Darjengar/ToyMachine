@@ -1,3 +1,5 @@
+# Author : Darjengar 08/23/2021, License: GPL 3.0
+
 #!/usr/bin/env python
 #from tkinter import *
 #from tkinter import ttk
