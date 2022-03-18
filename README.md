@@ -1,4 +1,4 @@
-# ToyMachine
+# Toy Machine
 Emulator of the TOY machine.
 
 This is the first version of the TOY machine emulator.
