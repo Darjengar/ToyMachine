@@ -12,3 +12,8 @@ TODO:
 - [ ] Refactoring
 - [ ] Write a TOY machine documentation
 - [ ] Add some TOY example programs
+
+## Building
+
+```bash
+```
