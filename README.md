@@ -15,5 +15,22 @@ TODO:
 
 ## Building
 
+So that you keep your standard Python installation clean I highly recommend you to setup a virtual environment (e.g.venv) for the following intallation guide.
+
+Setup a virtual environment
 ```bash
+python3 -m venv test-env
+source test-env/bin/activate
 ```
+Further reading:
+[Python Virtual Environment](https://docs.python.org/3/tutorial/venv.html).
+
+### Install toy package
+```bash
+python3 toy/setup.py install
+```
+### Run Toy Machine
+```bash
+python3 toy/toymachine.py
+```
+
