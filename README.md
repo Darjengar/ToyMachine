@@ -9,6 +9,6 @@ The last state is the result of the program.
 TODO:
 - [x] Write a TOY assembler (TOY assembly -> TOY machine code)
 - [x] Write a Python API with GUI
-- [] Refactoring
-- [] Write a TOY machine documentation
-- [] Add some TOY example programs
+- [ ] Refactoring
+- [ ] Write a TOY machine documentation
+- [ ] Add some TOY example programs
