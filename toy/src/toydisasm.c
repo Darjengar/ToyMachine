@@ -124,7 +124,7 @@ int *toydisasm(const char *filepath)
             break;
         case 0xB:
             scan_opcode12(byte1, byte2, &dst, &src2);
-            printf("stri R%X, [R%X]\n", src2, dst);
+            printf("stri R%X, [R%X]\n", dst, src2);
             break;
         case 0xC:
             scan_opcode2(byte1, byte2, &dst, &addr);
