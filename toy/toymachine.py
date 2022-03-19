@@ -139,7 +139,7 @@ class MainFrame(tk.Frame):
 
     def btnev_start_machine2(self):
         self.canvas.itemconfigure(self.text_id, text="FFFF")
-        halt_flag, input_flag, output_flag = toy.start_toy()
+        halt_flag, input_flag, output_flag, jmp_flag, pc = toy.start_toy()
         self.textbox["state"] = "normal"
         self.textbox.delete("1.0", tk.END)
         self.textbox.insert("1.0", self.program_str)
@@ -154,25 +154,30 @@ class MainFrame(tk.Frame):
             self.btncounter = 1
             return
 
+        if jmp_flag == 1:
+            self.btncounter = pc - 0x10 + 1
+
         if output_flag == 1:
             value = toy.output_toy()
             self.canvas.itemconfigure(self.text_id, text=format(value, 'X').zfill(4))
+            self.btncounter += 1
 
         if input_flag == 1:
             self.textfield.state(["!disabled"])
             self.btn2.state(["disabled"])
             self.btn7.state(["!disabled"])
+            self.btncounter += 1
         else:
             self.btn2.state(["!disabled"])
             self.log_str = toy.show_state()
             self.textbox2["state"] = "normal"
             self.textbox2.insert("1.0", self.log_str)
-            self.textbox2["state"] = "disabled" 
+            self.textbox2["state"] = "disabled"
+            self.btncounter += 1
 
         #self.btn2.state(["!disabled"])
         self.btn3.state(["!disabled"])
         self.btn4.state(["!disabled"])
-        self.btncounter += 1
 
     def intro_anim1(self):
         self.canvas.itemconfigure(self.text_id, text="Toy Machine", font=("Times", -32, "bold"))
@@ -197,7 +202,7 @@ class MainFrame(tk.Frame):
         self.after(1000, self.btnev_start_machine2)
 
     def btnev_step_machine(self):
-        halt_flag, input_flag, output_flag = toy.start_toy()
+        halt_flag, input_flag, output_flag, jmp_flag, pc = toy.start_toy()
         self.log_str = toy.show_state()
         self.textbox["state"] = "normal"
         self.textbox.delete("1.0", tk.END)
@@ -222,6 +227,8 @@ class MainFrame(tk.Frame):
             value = toy.output_toy()
             self.canvas.itemconfigure(self.text_id, text=format(value, 'X').zfill(4))
             self.btncounter += 1
+        elif jmp_flag == 1:
+            self.btncounter = pc - 0x10 + 1
         else:
             self.btncounter += 1
 

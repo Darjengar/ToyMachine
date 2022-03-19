@@ -35,6 +35,7 @@ struct {
     unsigned int halt_flag : 1;
     unsigned int input_flag : 1;
     unsigned int output_flag : 1;
+    unsigned int jmp_flag : 1;
 } toyflags;
 
 /*struct {
@@ -75,6 +76,7 @@ static PyObject *method_init_toy(PyObject *self, PyObject *args)
     toyflags.halt_flag = 0;
     toyflags.input_flag = 0;
     toyflags.output_flag = 0;
+    toyflags.jmp_flag = 0;
     mem[255] = 0;
     printf("Load program into ram\n");
     load_program(program);
@@ -96,16 +98,18 @@ static PyObject *method_start_toy(PyObject *self, PyObject *args)
     /* Fetch-Execute */
     curr_instr.opcode = (mem[pc] & 0xF000) >> 12;
     regs[0] = 0;
+    toyflags.jmp_flag = 0;
     if (exec_instr() != 0) {
         return NULL;
     }
-    if (toyflags.halt_flag == 0 && curr_instr.opcode != 0xC) {
+
+    if (toyflags.halt_flag == 0 && toyflags.jmp_flag == 0) {
         pc++;
     }
 
     //PyObject *py_result_str = PyUnicode_FromString(result_str);
     //free(result_str);
-    return Py_BuildValue("iii", toyflags.halt_flag, toyflags.input_flag, toyflags.output_flag);
+    return Py_BuildValue("iiiii", toyflags.halt_flag, toyflags.input_flag, toyflags.output_flag, toyflags.jmp_flag, pc);
     //return 0;
 }
 
@@ -160,6 +164,7 @@ static PyObject *method_stop_toy(PyObject *self, PyObject *args)
     toyflags.halt_flag = 0;
     toyflags.input_flag = 0;
     toyflags.output_flag = 0;
+    toyflags.jmp_flag = 0;
     mem[255] = 0;
     for (int iii = 0; iii < NUM_REGS; iii++) {
         regs[iii] = 0;
@@ -179,6 +184,7 @@ static PyObject *method_reset_toy(PyObject *self, PyObject *args)
     toyflags.halt_flag = 0;
     toyflags.input_flag = 0;
     toyflags.output_flag = 0;
+    toyflags.jmp_flag = 0;
     for (int iii = 0; iii < MEM_SIZE; iii++) {
         mem[iii] = 0;
     }
@@ -491,6 +497,7 @@ int exec_instr()
             if (regs[curr_instr.u1.src] == 0) {
                 pc = curr_instr.u2.addr;
             }
+            toyflags.jmp_flag = 1;
             break;
         /* branch positive */
         case 0xD:
