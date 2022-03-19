@@ -496,8 +496,8 @@ int exec_instr()
             curr_instr.u2.addr = mem[pc] & 0x00FF;
             if (regs[curr_instr.u1.src] == 0) {
                 pc = curr_instr.u2.addr;
+                toyflags.jmp_flag = 1;
             }
-            toyflags.jmp_flag = 1;
             break;
         /* branch positive */
         case 0xD:
@@ -505,6 +505,7 @@ int exec_instr()
             curr_instr.u2.addr = mem[pc] & 0x00FF;
             if (regs[curr_instr.u1.src] > 0) {
                 pc = curr_instr.u2.addr;
+                toyflags.jmp_flag = 1;
             }
             break;
         /* jump register */
