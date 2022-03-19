@@ -1,9 +1,9 @@
 ldaddr RA, 0x20
 ldaddr RB, 0x30
 add R1, RA, RB
-str 0xFF, R1
-ld RF, 0xFF
-ld RE, 0xFF
+str R1, [0xFF]
+ld RF, [0xFF]
+ld RE, [0xFF]
 add R1, RE, RF
-str 0xFF, R1
+str R1, [0xFF]
 halt

@@ -1,0 +1,17 @@
+ldaddr R1, 0x01
+ldaddr RA, 0x30
+ldaddr RB, 0x00
+ld RC, [0xFF]
+bz RC, 0x19
+add R6, RA, RB
+stri RC, [R6]
+add RB, RB, R1
+bz R0, 0x13
+bz RB, 0x20
+add R6, RA, RB
+sub R6, R6, R1
+ldi RC, [R6]
+str RC, [0xFF]
+sub RB, RB, R1
+bz R0, 0x19
+halt

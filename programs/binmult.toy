@@ -1,0 +1,14 @@
+ld RA, [0x0A]
+ld RB, [0x0B]
+ld RC, [0x0D]
+ld R1, [0x0E]
+ld R2, [0x0F]
+sub R2, R2, R1
+shl R3, RA, R2
+shr R4, RB, R2
+and R4, R4, R1
+bz R4, 0x1B
+add RC, RC, R3
+bp R2, 0x15
+str RC, [0x0C]
+halt

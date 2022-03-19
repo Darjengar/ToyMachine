@@ -1,0 +1,15 @@
+ld RA, [0xFF]
+ld RB, [0xFF]
+jmpl RF, 0x30
+add RA, RC, R0
+ld RB, [0xFF]
+jmpl RF, 0x30
+str RC, [0xFF]
+halt
+ldaddr RC, 0x00
+ldaddr R1, 0x01
+bz RA, 0x36
+add RC, RC, RB
+sub RA, RA, R1
+bz R0, 0x32
+jmpreg [RF]

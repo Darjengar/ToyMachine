@@ -1,0 +1,10 @@
+ld RA, [0x0A]
+ld RB, [0x0B]
+ld RC, [0x0D]
+ld R1, [0x0E]
+bz RA, 0x18
+add RC, RC, RB
+sub RA, RA, R1
+bz R0, 0x14
+str RC, [0x0C]
+halt
