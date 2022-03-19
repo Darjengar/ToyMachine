@@ -272,7 +272,7 @@ static PyObject *method_toydisasm(PyObject *self, PyObject *args)
             break;
         case 0xB:
             scan_opcode12(byte1, byte2);
-            sprintf(tmp, "%d | stri R%X, [R%X]\n", iii+1 - START_OF_PROGRAM, curr_instr.u2.src.src2, curr_instr.u1.dst);
+            sprintf(tmp, "%d | stri R%X, [R%X]\n", iii+1 - START_OF_PROGRAM,  curr_instr.u1.dst, curr_instr.u2.src.src2);
             strcat(result_str, tmp);
             break;
         case 0xC:
@@ -512,6 +512,7 @@ int exec_instr()
         case 0xE:
             curr_instr.u1.src = (mem[pc] & 0x0F00) >> 8;
             pc = regs[curr_instr.u1.src];
+            toyflags.jmp_flag = 1;
             break;
         /* jump and link */
         case 0xF:
@@ -519,6 +520,7 @@ int exec_instr()
             curr_instr.u2.addr = mem[pc] & 0x00FF;
             regs[curr_instr.u1.dst] = pc;
             pc = curr_instr.u2.addr;
+            toyflags.jmp_flag = 1;
             break;
     }
     return 0;
