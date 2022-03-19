@@ -27,13 +27,15 @@ int main(int argc, char *argv[])
         char *op[4] = {};
         unsigned short program[256] = {0};
         int iii = 16;
+        int num_lines = 0;
         while(fgets(line, MAX_LINE_LENGTH, fp)) {
+            num_lines++;
             printf("%s", line);
             tmp = strtok(line, " ");
             int jjj = 0;
             while(tmp != NULL) {
                 op[jjj] = tmp;
-                tmp = strtok(NULL, ", \n");
+                tmp = strtok(NULL, ",[] \n");
                 jjj++;
             }
 
@@ -75,14 +77,14 @@ int main(int argc, char *argv[])
                 program[iii] = 11<<12 | (get_regnum(op[1])<<8)
                         | get_regnum(op[2]);
             }
-            else if (strcmp(op[0],"brz") == 0) {
+            else if (strcmp(op[0],"bz") == 0) {
                 format(op, 12, program, iii, 2);
             }
-            else if (strcmp(op[0],"brp") == 0) {
+            else if (strcmp(op[0],"bp") == 0) {
                 format(op, 13, program, iii, 2);
             }
             else if (strcmp(op[0],"jmpreg") == 0) {
-                format(op, 14, program, iii, 2);
+                program[iii] = 14<<12 | (get_regnum(op[1])<<8);
             }
             else if (strcmp(op[0],"jmpl") == 0) {
                 format(op, 15, program, iii, 2);
@@ -91,7 +93,16 @@ int main(int argc, char *argv[])
         }
         printf("\n");
         show_mem(program, 256);
+        unsigned char *program_file = calloc(16 + num_lines, sizeof(unsigned short));
+        FILE *fp2 = fopen("program.bin", "w");
+        /*memcpy(program_file, program, 2*(16 + num_lines * sizeof(unsigned short)));*/
+        for (int iii = 0; iii < 16 + num_lines; iii++) {
+            putc((program[iii] & 0xFF00) >> 8, fp2);
+            putc((program[iii] & 0x00FF), fp2);
+        }
+        free(program_file);
         fclose(fp);
+        fclose(fp2);
     }
 }
 

@@ -95,6 +95,7 @@ static PyObject *method_start_toy(PyObject *self, PyObject *args)
 
     /* Fetch-Execute */
     curr_instr.opcode = (mem[pc] & 0xF000) >> 12;
+    regs[0] = 0;
     if (exec_instr() != 0) {
         return NULL;
     }
@@ -250,42 +251,42 @@ static PyObject *method_toydisasm(PyObject *self, PyObject *args)
             break;
         case 0x8:
             scan_opcode2(byte1, byte2);
-            sprintf(tmp, "%d | ld R%X, 0x%s\n", iii+1 - START_OF_PROGRAM, curr_instr.u1.dst, pad8(curr_instr.u2.addr));
+            sprintf(tmp, "%d | ld R%X, [0x%s]\n", iii+1 - START_OF_PROGRAM, curr_instr.u1.dst, pad8(curr_instr.u2.addr));
             strcat(result_str, tmp);
             break;
         case 0x9:
             scan_opcode2(byte1, byte2);
-            sprintf(tmp, "%d | str 0x%s, R%X\n", iii+1 - START_OF_PROGRAM, pad8(curr_instr.u2.addr), curr_instr.u1.dst);
+            sprintf(tmp, "%d | str R%X, [0x%s]\n", iii+1 - START_OF_PROGRAM, curr_instr.u1.dst, pad8(curr_instr.u2.addr));
             strcat(result_str, tmp);
             break;
         case 0xA:
             scan_opcode12(byte1, byte2);
-            sprintf(tmp, "%d | ldi R%X, R%X\n", iii+1 - START_OF_PROGRAM, curr_instr.u1.dst, curr_instr.u2.src.src2);
+            sprintf(tmp, "%d | ldi R%X, [R%X]\n", iii+1 - START_OF_PROGRAM, curr_instr.u1.dst, curr_instr.u2.src.src2);
             strcat(result_str, tmp);
             break;
         case 0xB:
             scan_opcode12(byte1, byte2);
-            sprintf(tmp, "%d | stri R%X, R%X\n", iii+1 - START_OF_PROGRAM, curr_instr.u2.src.src2, curr_instr.u1.dst);
+            sprintf(tmp, "%d | stri R%X, [R%X]\n", iii+1 - START_OF_PROGRAM, curr_instr.u2.src.src2, curr_instr.u1.dst);
             strcat(result_str, tmp);
             break;
         case 0xC:
             scan_opcode2(byte1, byte2);
-            sprintf(tmp, "%d | brz R%X, R%X\n", iii+1 - START_OF_PROGRAM, curr_instr.u1.dst, curr_instr.u2.addr);
+            sprintf(tmp, "%d | bz R%X, 0x%s\n", iii+1 - START_OF_PROGRAM, curr_instr.u1.dst, pad8(curr_instr.u2.addr));
             strcat(result_str, tmp);
             break;
         case 0xD:
             scan_opcode2(byte1, byte2);
-            sprintf(tmp, "%d | brp R%X, R%X\n", iii+1 - START_OF_PROGRAM, curr_instr.u1.dst, curr_instr.u2.addr);
+            sprintf(tmp, "%d | bp R%X, 0x%s\n", iii+1 - START_OF_PROGRAM, curr_instr.u1.dst, pad8(curr_instr.u2.addr));
             strcat(result_str, tmp);
             break;
         case 0xE:
             curr_instr.u1.dst = byte1 & 0x0F;
-            sprintf(tmp, "%d | jmpreg R%X\n", iii+1 - START_OF_PROGRAM, curr_instr.u1.dst);
+            sprintf(tmp, "%d | jmpreg [R%X]\n", iii+1 - START_OF_PROGRAM, curr_instr.u1.dst);
             strcat(result_str, tmp);
             break;
         case 0xF:
             scan_opcode2(byte1, byte2);
-            sprintf(tmp, "%d | jmpl R%X, 0x%s\n", iii+1 - START_OF_PROGRAM, curr_instr.u1.dst, pad8(curr_instr.u2.addr));
+            sprintf(tmp, "%d | jmpl [R%X], 0x%s\n", iii+1 - START_OF_PROGRAM, curr_instr.u1.dst, pad8(curr_instr.u2.addr));
             strcat(result_str, tmp);
             break;
         }

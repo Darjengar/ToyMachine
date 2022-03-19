@@ -112,37 +112,37 @@ int *toydisasm(const char *filepath)
             break;
         case 0x8:
             scan_opcode2(byte1, byte2, &dst, &addr);
-            printf("ld R%X, 0x%sn", dst, pad8(addr));
+            printf("ld R%X, [0x%s]\n", dst, pad8(addr));
             break;
         case 0x9:
             scan_opcode2(byte1, byte2, &dst, &addr);
-            printf("str 0x%s, R%X\n", pad8(addr), dst);
+            printf("str R%X, [0x%s]\n", dst, pad8(addr));
             break;
         case 0xA:
             scan_opcode12(byte1, byte2, &dst, &src2);
-            printf("ldi R%X, R%X\n", dst, src2);
+            printf("ldi R%X, [R%X]\n", dst, src2);
             break;
         case 0xB:
             scan_opcode12(byte1, byte2, &dst, &src2);
-            printf("stri R%X, R%X\n", src2, dst);
+            printf("stri R%X, [R%X]\n", src2, dst);
             break;
         case 0xC:
             scan_opcode2(byte1, byte2, &dst, &addr);
-            printf("brz R%X, R%X\n", dst, addr);
+            printf("bz R%X, 0x%s\n", dst, pad8(addr));
             break;
         case 0xD:
             scan_opcode2(byte1, byte2, &dst, &addr);
-            printf("brp R%X, R%X\n", dst, addr);
+            printf("bp R%X, 0x%s\n", dst, pad8(addr));
             break;
         case 0xE:
             dst = byte1 & 0x0F;
             printf("jmpreg\n");
-            printf("jmpreg R%X\n", dst);
+            printf("jmpreg [R%X]\n", dst);
             break;
         case 0xF:
             scan_opcode2(byte1, byte2, &dst, &addr);
             printf("jmpl\n");
-            printf("jmpl R%X, 0x%s\n", dst, pad8(addr));
+            printf("jmpl [R%X], 0x%s\n", dst, pad8(addr));
             break;
         }
     }
