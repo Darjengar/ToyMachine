@@ -5,5 +5,5 @@ ld RA, [0xFF]
 stri RA, [R2]
 add R2, R2, R1
 sub R4, R3, R2
-bp R4, 0xF3
+bp R4, 0x13
 halt
