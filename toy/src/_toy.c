@@ -99,7 +99,7 @@ static PyObject *method_start_toy(PyObject *self, PyObject *args)
     if (exec_instr() != 0) {
         return NULL;
     }
-    if (toyflags.halt_flag == 0) {
+    if (toyflags.halt_flag == 0 && curr_instr.opcode != 0xC) {
         pc++;
     }
 
