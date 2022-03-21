@@ -3,7 +3,9 @@
 Toy Machine has a 16-bit Architecture.
 Therefore the RAM is 256 16-bit words long and the machine
 has 16x16-bit registers with register R0 always zero.
+
 PC (stands for program counter) is an extra 8-bit register to store the current program execution address.
+
 The program starts at memory address 0x10.
 
 ## Abbreviations
