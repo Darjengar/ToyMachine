@@ -1,5 +1,10 @@
 # TOY Machine Documentation
 
+Toy Machine has a 16-bit Architecture.
+The RAM is 256 16-bit words long.
+Has 16x16-bit registers.
+Register R0 is always zero.
+
 ## Abbreviations
 X,Y and Z are in {0,...,9,A,...,F}.
 
@@ -8,6 +13,13 @@ ADDR stands for a 8-bit value.
 [ADDR] means load/store from/at ADDR.
 
 [RX]   means load/store from/at ADDR written in RX.
+
+## RAM Table
+| Address     | Description         |
+|-------------|---------------------|
+| 0x00 - 0x0F | RAW binary data     |
+| 0x10 - 0xFE | Program             |
+| 0xFF        | IO-Address          |
 
 ## Operations
 
