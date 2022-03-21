@@ -1,7 +1,7 @@
 # TOY Machine Documentation
 
 ## Abbreviations
-X,Y,Z are in {0,...,9,A,...,F}.
+X,Y and Z are in {0,...,9,A,...,F}.
 
 ADDR stands for a 8-bit value.
 
