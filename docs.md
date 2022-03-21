@@ -2,7 +2,7 @@
 
 Toy Machine has a 16-bit Architecture.
 Therefore the RAM is 256 16-bit words long and the machine
-has 16x16-bit registers with Register R0 always zero.
+has 16x16-bit registers with register R0 always zero.
 
 ## Abbreviations
 X,Y and Z are in {0,...,9,A,...,F}.
