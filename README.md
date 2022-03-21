@@ -18,7 +18,7 @@ program and prints it in terminal.
 - [x] Write a TOY assembler (TOY assembly -> TOY machine code)
 - [x] Write a Python API with GUI
 - [ ] Refactoring
-- [ ] Write a TOY machine documentation
+- [x] Write a TOY machine documentation
 - [x] Add some TOY example programs
 
 ## Building
