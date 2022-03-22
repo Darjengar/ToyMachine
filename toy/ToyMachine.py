@@ -1,3 +1,7 @@
+#!/usr/bin/env python
+# Author : Darjengar 08/23/2021, License: GPL 3.0
+# written in Python 3.9
+
 import tkinter as tk
 from tkinter.constants import FALSE
 import MainFrame
