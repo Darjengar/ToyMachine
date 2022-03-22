@@ -1,4 +1,5 @@
 # Author : Darjengar 08/23/2021, License: GPL 3.0
+# written in Python 3.9
 
 #!/usr/bin/env python
 #from tkinter import *
@@ -108,24 +109,25 @@ class MainFrame(tk.Frame):
            # iii += 1
         #self.textbox.insert("1.end", "\t\t|<--")
         #self.textbox["state"] = "disabled"
-        try:
-            self.file_name = filedialog.askopenfilename(filetypes=[("binary file", "*.bin")])
-            if self.file_name is not str:
-                return
-            self.log_str = toy.init_toy(self.file_name)
-            self.program_str = toy.toydisasm()
+        self.file_name = filedialog.askopenfilename(filetypes=[("binary file", "*.bin")])
+        if not isinstance(self.file_name, str):
+            return
+        elif self.file_name == "":
+            return
+        self.log_str = toy.init_toy(self.file_name)
+        self.program_str = toy.toydisasm()
 
-            self.textbox["state"] = "normal"
-            self.textbox.insert("1.0", self.program_str)
-            self.textbox["state"] = "disabled"
-            self.textbox2["state"] = "normal"
-            self.textbox2.insert("1.0", self.log_str)
-            self.textbox2["state"] = "disabled"
+        self.textbox["state"] = "normal"
+        self.textbox.delete("1.0", tk.END)
+        self.textbox.insert("1.0", self.program_str)
+        self.textbox["state"] = "disabled"
+        self.textbox2["state"] = "normal"
+        self.textbox2.delete("1.0", tk.END)
+        self.textbox2.insert("1.0", self.log_str)
+        self.textbox2["state"] = "disabled"
 
-            self.btn1.state(["!disabled"])
-            self.btn5.state(["!disabled"])
-        except TypeError:
-            pass
+        self.btn1.state(["!disabled"])
+        self.btn5.state(["!disabled"])
 
     def btnev_start_machine(self):
         self.btn1.bell()
