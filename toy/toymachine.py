@@ -3,16 +3,11 @@
 #!/usr/bin/env python
 #from tkinter import *
 #from tkinter import ttk
-from cgitb import text
-from distutils.text_file import TextFile
-from os import close
 import tkinter as tk
-from tkinter import Grid, StringVar, ttk
-from tkinter.constants import END, FALSE, INSERT, VERTICAL
+from tkinter import ttk
+from tkinter.constants import FALSE, VERTICAL
 from tkinter import filedialog
-from turtle import back
 import toy
-import time
 
 class ToyMachineGUI(tk.Tk):
     def __init__(self, *args, **kwargs):
@@ -113,20 +108,24 @@ class MainFrame(tk.Frame):
            # iii += 1
         #self.textbox.insert("1.end", "\t\t|<--")
         #self.textbox["state"] = "disabled"
-        self.file_name = filedialog.askopenfilename()
-        self.log_str = toy.init_toy(self.file_name)
-        self.program_str = toy.toydisasm()
+        try:
+            self.file_name = filedialog.askopenfilename(filetypes=[("binary file", "*.bin")])
+            if self.file_name is not str:
+                return
+            self.log_str = toy.init_toy(self.file_name)
+            self.program_str = toy.toydisasm()
 
-        self.textbox["state"] = "normal"
-        self.textbox.insert("1.0", self.program_str)
-        self.textbox["state"] = "disabled"
-        self.textbox2["state"] = "normal"
-        self.textbox2.insert("1.0", self.log_str)
-        self.textbox2["state"] = "disabled"
+            self.textbox["state"] = "normal"
+            self.textbox.insert("1.0", self.program_str)
+            self.textbox["state"] = "disabled"
+            self.textbox2["state"] = "normal"
+            self.textbox2.insert("1.0", self.log_str)
+            self.textbox2["state"] = "disabled"
 
-        self.btn1.state(["!disabled"])
-        self.btn5.state(["!disabled"])
-        #file.close()
+            self.btn1.state(["!disabled"])
+            self.btn5.state(["!disabled"])
+        except TypeError:
+            pass
 
     def btnev_start_machine(self):
         self.btn1.bell()

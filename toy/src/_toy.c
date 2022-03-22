@@ -78,7 +78,6 @@ static PyObject *method_init_toy(PyObject *self, PyObject *args)
     toyflags.output_flag = 0;
     toyflags.jmp_flag = 0;
     mem[255] = 0;
-    printf("Load program into ram\n");
     load_program(program);
 
     strcpy(result_str, show_regs(regs, 16));
@@ -363,16 +362,11 @@ PyMODINIT_FUNC PyInit_toy(void)
     return PyModule_Create(&toymodule);
 }
 
-void load_program(const char* program)
+void load_program(const char *program)
 {
     int byte1, byte2;
-    FILE *fp = fopen(program, "rb");
-
-    /*int prev = ftell(fp);
-    fseek(fp, 0L, SEEK_END);
-    int size = ftell(fp);
-    fseek(fp, prev, SEEK_SET);*/
-    /*fread(mem, size, 1, fp);*/
+    FILE *fp = NULL;
+    fp = fopen(program, "rb");
 
     int iii = 0;
     while((byte1 = getc(fp)) != EOF && (byte2 = getc(fp)) != EOF) {
@@ -524,11 +518,6 @@ int exec_instr()
             break;
     }
     return 0;
-}
-
-void test()
-{
-    printf("%X\n", 255 + 2);
 }
 
 char *pad8(unsigned char num)
