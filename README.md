@@ -9,8 +9,8 @@ Additionally I have added the program toyasm and
 toydisasm.
 
 ## Programs
-- toyasm - translates TOY programs into binary format as *.bin file for the TOY Machine.
-- toydisasm - translates a TOY binary file back into a TOY
+- toyasm - translates TOY programs into binary format as *.bin file for the TOY Machine. (Builded under Linux distribution)
+- toydisasm - translates a TOY binary file back into a TOY (Builded under Linux distribution)
 program and prints it in terminal.
 - toymachine.py - TOY Machine emulator.
 

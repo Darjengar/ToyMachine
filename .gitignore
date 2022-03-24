@@ -1,4 +1,6 @@
 *.out
+*.o
 toy/build
 (*).*
 test.*
+__pycache__
