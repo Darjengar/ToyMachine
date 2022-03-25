@@ -22,7 +22,10 @@ program and prints it in terminal.
 - [x] Add some TOY example programs
 
 ## Building
+TOY machine is only tested on Linux.
+Therefore the building guide needs to be adapt for your os maybe.
 The TOY Machine is written Python 3.9.
+
 So that you keep your standard Python installation clean I highly recommend you to setup a virtual environment (e.g.venv) for the following intallation guide.
 
 Setup a virtual environment
