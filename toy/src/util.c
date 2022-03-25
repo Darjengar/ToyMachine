@@ -82,7 +82,7 @@ char *show_mem(unsigned short int mem[], int size, int start_num)
             free(temp);
         }
     }
-    strcat(out_str, "--------------------------------------------\n");
+    strcat(out_str, "--------------------------------------------");
     free(mem_str);
     return out_str;
 }

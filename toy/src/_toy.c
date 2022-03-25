@@ -130,19 +130,28 @@ static PyObject *method_reset_toy(PyObject *self, PyObject *args)
 
 static PyObject *method_toydisasm(PyObject *self, PyObject *args)
 {
-    ToyInstr *instr_p = curr_state.instr_p;
-    ToyRam *ram_p = curr_state.ram_p;
-
-    char *result_str = malloc(5000);
-    strcpy(result_str, "");
-    char *tmp = malloc(50);
     PyObject *py_result_str;
 
     if (!PyArg_ParseTuple(args, "")) {
         return NULL;
     }
 
+    ToyInstr *instr_p = curr_state.instr_p;
+    ToyRam *ram_p = curr_state.ram_p;
+    ToyProgram *program_p = curr_state.program_p;
+
     unsigned char byte1;
+    char *result_str = malloc(10000);
+    char *tmp = malloc(1000);
+    char *tmp_p1, *tmp_p2;
+
+    tmp_p1 = strtok(program_p->filename, "/\\");
+    while ( tmp_p1 != NULL) {
+        tmp_p2 = tmp_p1;
+        tmp_p1 = strtok(NULL, "/\\");
+    }
+    sprintf(tmp, "Current program loaded:\n%s\n\n", tmp_p2);
+    strcpy(result_str, tmp);
 
     int iii = 0;
     while(iii != curr_state.program_p->eop) {

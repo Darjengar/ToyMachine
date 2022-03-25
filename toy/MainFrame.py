@@ -1,6 +1,7 @@
 # Author : Darjengar 08/23/2021, License: GPL 3.0
 # written in Python 3.9
 
+from cgitb import text
 import tkinter as tk
 from tkinter import ttk
 from tkinter.constants import VERTICAL
@@ -63,7 +64,7 @@ class MainFrame(tk.Frame):
         super().__init__(parent, *args, **kwargs)
         self.grid()
 
-        self.program_pos = 1
+        self.program_pos = 4
         self.file_name = ""
         self.program_str = ""
         self.log_str = ""
@@ -224,7 +225,7 @@ class MainFrame(tk.Frame):
         self.textbox1["state"] = "normal"
         self.textbox1.delete("1.0", tk.END)
         self.textbox1.insert("1.0", self.program_str)
-        self.textbox1.insert("1.end", "\t\t|<--")
+        self.textbox1.insert("4.end", "\t\t|<--")
         self.textbox1["state"] = "disabled"
 
         if halt_flag == 1:
@@ -232,11 +233,11 @@ class MainFrame(tk.Frame):
             self.btn_step.state(["disabled"])
             self.btn_stop.state(["disabled"])
             self.btn_reset.state(["!disabled"])
-            self.program_pos = 1
+            self.program_pos = 4
             return
 
         if jmp_flag == 1:
-            self.program_pos = pc - 0x10 + 1
+            self.program_pos = pc - 0x10 + 4
 
         if output_flag == 1:
             value = toy.output_toy()
@@ -279,7 +280,7 @@ class MainFrame(tk.Frame):
             self.btn_step.state(["disabled"])
             self.btn_stop.state(["disabled"])
             self.btn_reset.state(["!disabled"])
-            self.program_pos = 1
+            self.program_pos = 4
         elif input_flag == 1:
             self.textfield.state(["!disabled"])
             self.btn_step.state(["disabled"])
@@ -291,7 +292,7 @@ class MainFrame(tk.Frame):
                 self.toy_disp_txt_id, text=format(value, 'X').zfill(4))
             self.program_pos += 1
         elif jmp_flag == 1:
-            self.program_pos = pc - 0x10 + 1
+            self.program_pos = pc - 0x10 + 4
         else:
             self.program_pos += 1
 
@@ -305,7 +306,7 @@ class MainFrame(tk.Frame):
         self.btn_stop.state(["disabled"])
         self.btn_reset.state(["!disabled"])
         self.btn_enter.state(["disabled"])
-        self.program_pos = 1
+        self.program_pos = 4
 
         self.toy_display.configure(background="#697059")
         self.toy_display.itemconfigure(self.toy_disp_txt_id, text="")
@@ -345,7 +346,7 @@ class MainFrame(tk.Frame):
         self.toy_display.configure(background="#697059")
         self.toy_display.itemconfigure(self.toy_disp_txt_id, text="")
 
-        self.program_pos = 1
+        self.program_pos = 4
         self.file_name = ""
 
         toy.reset_toy()
