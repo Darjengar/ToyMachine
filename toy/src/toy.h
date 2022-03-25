@@ -27,11 +27,12 @@
 #define MAX_NUM_STATES 1
 
 enum boolean {FALSE, TRUE};
+typedef enum boolean Boolean;
 
 typedef struct {
-    unsigned char data_mem[MEM_DATA_SIZE];
+    unsigned short int data_mem[MEM_DATA_SIZE];
     unsigned short int prog_mem[MEM_PROG_SIZE];
-    unsigned char io;
+    unsigned short int io;
 } ToyRam;
 
 typedef enum opcode {
@@ -143,6 +144,6 @@ char *show_state(ToyState *curr_state_p);
  * 
  * @param state_p 
  */
-void reset_state(ToyState *state_p);
+void reset_state(ToyState *state_p, Boolean res_ram);
 
 #endif

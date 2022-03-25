@@ -14,7 +14,7 @@ void load_program(ToyState *curr_state_p)
 
     int iii = 0;
     while (iii <= MEM_DATA_END) {
-        ram_p->data_mem[iii++] = getc(fp);
+        ram_p->data_mem[iii++] = (getc(fp) << 8) | getc(fp);
     }
     iii = 0;
     while((byte1 = getc(fp)) != EOF && (byte2 = getc(fp)) != EOF) {
