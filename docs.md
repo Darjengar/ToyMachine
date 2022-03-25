@@ -7,6 +7,7 @@ has 16x16-bit registers with register R0 always zero.
 PC (stands for program counter) is an extra 8-bit register to store the current program execution address.
 
 The program starts at memory address 0x10.
+The size of a TOY program is max. 240 words (480 bytes) long.
 
 ## Abbreviations
 X,Y and Z are in {0,...,9,A,...,F}.
