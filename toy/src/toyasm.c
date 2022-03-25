@@ -109,7 +109,6 @@ int main(int argc, char *argv[])
             iii++;
         }
         printf("\n");
-        printf("%s", show_mem(program, 256));
         FILE *fp2 = NULL;
         strcat(outname, ".bin");
         if ((fp2 = fopen(outname, "w")) == NULL) {

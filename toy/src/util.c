@@ -50,11 +50,11 @@ char *show_mem(unsigned short int mem[], int size, int start_num)
 {
     char *mem_str = malloc(50);
     char *out_str = malloc(10000);
-    strcpy(out_str, "----------------------------------------------\n");
-    strcat(out_str, "| Memory                                     |\n");
-    strcat(out_str, "----------------------------------------------\n");
+    strcpy(out_str, "--------------------------------------------\n");
+    strcat(out_str, "| Memory                                   |\n");
+    strcat(out_str, "--------------------------------------------\n");
     char *temp;
-    temp = pad16(0);
+    temp = pad8(start_num);
     sprintf(mem_str, "%s | ", temp);
     strcat(out_str, mem_str);
     free(temp);
@@ -70,7 +70,7 @@ char *show_mem(unsigned short int mem[], int size, int start_num)
             sprintf(mem_str, "%s\n", temp);
             strcat(out_str, mem_str);
             free(temp);
-            temp = pad16(iii+1);
+            temp = pad8(iii+1);
             sprintf(mem_str, "%s | ", temp);
             strcat(out_str, mem_str);
             free(temp);
@@ -82,7 +82,7 @@ char *show_mem(unsigned short int mem[], int size, int start_num)
             free(temp);
         }
     }
-    strcat(out_str, "----------------------------------------------");
+    strcat(out_str, "--------------------------------------------\n");
     free(mem_str);
     return out_str;
 }

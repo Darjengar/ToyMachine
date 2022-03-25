@@ -145,7 +145,7 @@ static PyObject *method_toydisasm(PyObject *self, PyObject *args)
     unsigned char byte1;
 
     int iii = 0;
-    while(iii != curr_state.program_p->eof) {
+    while(iii != curr_state.program_p->eop) {
         byte1 = (ram_p->prog_mem[iii] & 0xFF00) >> 8;
 
         instr_p->opcode = (byte1 & 0xF0) >> 4;

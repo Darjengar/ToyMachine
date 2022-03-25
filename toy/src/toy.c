@@ -20,7 +20,7 @@ void load_program(ToyState *curr_state_p)
     while((byte1 = getc(fp)) != EOF && (byte2 = getc(fp)) != EOF) {
         ram_p->prog_mem[iii++] = (byte1 << 8) | byte2;
     }
-    program_p->eof = iii;
+    program_p->eop = iii;
     fclose(fp);
 }
 
@@ -213,8 +213,20 @@ char *show_state(ToyState *curr_state_p)
 
     strcpy(result_str, show_regs(curr_state_p));
     strcat(result_str, show_mem(ram_p->data_mem, MEM_DATA_SIZE, 0));
-    strcat(result_str, show_mem(ram_p->prog_mem, MEM_PROG_SIZE, MEM_PROG_START));
+    strcat(result_str, show_mem(ram_p->prog_mem, MEM_PROG_SIZE+MEM_PROG_START-1, MEM_PROG_START));
 
+    char *temp = malloc(50);
+    strcat(result_str, "--------------------------------------------"
+        "\n");
+    strcat(result_str, "| Memory IO                                "
+        "|\n");
+    strcat(result_str, "--------------------------------------------"
+        "\n");
+    sprintf(temp, "%X | %s\n", MEM_IO, pad16(ram_p->io));
+    strcat(result_str, temp);
+    strcat(result_str, "--------------------------------------------"
+        "\n");
+    free(temp);
     return result_str;
 }
 

@@ -86,7 +86,7 @@ typedef struct {
 
 typedef struct {
     char *filename;
-    int eof;
+    int eop;
 } ToyProgram;
 
 typedef struct {
