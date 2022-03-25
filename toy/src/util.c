@@ -60,13 +60,13 @@ char *show_mem(unsigned short int mem[], int size, int start_num)
     free(temp);
     for (int iii = start_num; iii < size; iii++) {
         if (iii+1 == size) {
-            temp = pad16(mem[iii]);
+            temp = pad16(mem[iii - start_num]);
             sprintf(mem_str, "%s\n", temp);
             strcat(out_str, mem_str);
             free(temp);
         }
         else if ((iii+1) % 8 == 0) {
-            temp = pad16(mem[iii]);
+            temp = pad16(mem[iii - start_num]);
             sprintf(mem_str, "%s\n", temp);
             strcat(out_str, mem_str);
             free(temp);
@@ -76,7 +76,7 @@ char *show_mem(unsigned short int mem[], int size, int start_num)
             free(temp);
         }
         else {
-            temp = pad16(mem[iii]);
+            temp = pad16(mem[iii - start_num]);
             sprintf(mem_str, "%s ", temp);
             strcat(out_str, mem_str);
             free(temp);

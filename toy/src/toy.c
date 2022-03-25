@@ -36,35 +36,35 @@ void exec_instr(ToyState *curr_state_p)
             flags_p->halt_flag = 1;
             break;
         case OP_ADD:
-            scan_opcode(11, curr_state_p, curr_state_p->pc);
+            scan_opcode(11, curr_state_p, curr_state_p->pc - MEM_PROG_START);
             regs[instr_p->u1.dst] = regs[instr_p->u2.src.src1] + regs[instr_p->u2.src.src2];
             break;
         case OP_SUB:
-            scan_opcode(11, curr_state_p, curr_state_p->pc);
+            scan_opcode(11, curr_state_p, curr_state_p->pc - MEM_PROG_START);
             regs[instr_p->u1.dst] = regs[instr_p->u2.src.src1] - regs[instr_p->u2.src.src2];
             break;
         case OP_AND:
-            scan_opcode(11, curr_state_p, curr_state_p->pc);
+            scan_opcode(11, curr_state_p, curr_state_p->pc - MEM_PROG_START);
             regs[instr_p->u1.dst] = regs[instr_p->u2.src.src1] & regs[instr_p->u2.src.src2];
             break;
         case OP_XOR:
-            scan_opcode(11, curr_state_p, curr_state_p->pc);
+            scan_opcode(11, curr_state_p, curr_state_p->pc - MEM_PROG_START);
             regs[instr_p->u1.dst] = regs[instr_p->u2.src.src1] ^ regs[instr_p->u2.src.src2];
             break;
         case OP_SHL:
-            scan_opcode(11, curr_state_p, curr_state_p->pc);
+            scan_opcode(11, curr_state_p, curr_state_p->pc - MEM_PROG_START);
             regs[instr_p->u1.dst] = regs[instr_p->u2.src.src1] << regs[instr_p->u2.src.src2];
             break;
         case OP_SHR:
-            scan_opcode(11, curr_state_p, curr_state_p->pc);
+            scan_opcode(11, curr_state_p, curr_state_p->pc - MEM_PROG_START);
             regs[instr_p->u1.dst] = regs[instr_p->u2.src.src1] >> regs[instr_p->u2.src.src2];
             break;
         case OP_LDADDR:
-            scan_opcode(21, curr_state_p, curr_state_p->pc);
+            scan_opcode(21, curr_state_p, curr_state_p->pc - MEM_PROG_START);
             regs[instr_p->u1.dst] = instr_p->u2.addr;
             break;
         case OP_LD:
-            scan_opcode(21, curr_state_p, curr_state_p->pc);
+            scan_opcode(21, curr_state_p, curr_state_p->pc - MEM_PROG_START);
             if (instr_p->u2.addr == MEM_IO) {
                 flags_p->input_flag = 1;
             }
@@ -78,7 +78,7 @@ void exec_instr(ToyState *curr_state_p)
             }
             break;
         case OP_STR:
-            scan_opcode(22, curr_state_p, curr_state_p->pc);
+            scan_opcode(22, curr_state_p, curr_state_p->pc - MEM_PROG_START);
             if (instr_p->u2.addr == MEM_IO) {
                 flags_p->output_flag = 1;
             }
@@ -92,7 +92,7 @@ void exec_instr(ToyState *curr_state_p)
             }
             break;
         case OP_LDI:
-            scan_opcode(12, curr_state_p, curr_state_p->pc);
+            scan_opcode(12, curr_state_p, curr_state_p->pc - MEM_PROG_START);
             if (regs[instr_p->u2.src.src2] <= MEM_DATA_END) {
                 regs[instr_p->u1.dst] = ram_p->data_mem[regs[instr_p->u2.src.src2]];
             }
@@ -101,7 +101,7 @@ void exec_instr(ToyState *curr_state_p)
             }
             break;
         case OP_STRI:
-            scan_opcode(12, curr_state_p, curr_state_p->pc);
+            scan_opcode(12, curr_state_p, curr_state_p->pc - MEM_PROG_START);
             if (regs[instr_p->u2.src.src2] <= MEM_DATA_END) {
                 ram_p->data_mem[regs[instr_p->u2.src.src2]] = regs[instr_p->u1.dst];
             }
@@ -111,14 +111,14 @@ void exec_instr(ToyState *curr_state_p)
             
             break;
         case OP_BZ:
-            scan_opcode(22, curr_state_p, curr_state_p->pc);
+            scan_opcode(22, curr_state_p, curr_state_p->pc - MEM_PROG_START);
             if (regs[instr_p->u1.src] == 0) {
                 curr_state_p->pc = instr_p->u2.addr;
                 flags_p->jmp_flag = 1;
             }
             break;
         case OP_BP:
-            scan_opcode(22, curr_state_p, curr_state_p->pc);
+            scan_opcode(22, curr_state_p, curr_state_p->pc - MEM_PROG_START);
             if (regs[instr_p->u1.src] > 0) {
                 curr_state_p->pc = instr_p->u2.addr;
                 flags_p->jmp_flag = 1;
@@ -130,10 +130,10 @@ void exec_instr(ToyState *curr_state_p)
             flags_p->jmp_flag = 1;
             break;
         case OP_JMPL:
-            scan_opcode(21, curr_state_p, curr_state_p->pc);
+            scan_opcode(21, curr_state_p, curr_state_p->pc - MEM_PROG_START);
             regs[instr_p->u1.dst] = ++curr_state_p->pc;
             curr_state_p->pc = instr_p->u2.addr;
-            curr_state_p->flags_p->jmp_flag = 1;
+            flags_p->jmp_flag = 1;
             break;
     }
 }

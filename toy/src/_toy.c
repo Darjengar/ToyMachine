@@ -149,7 +149,6 @@ static PyObject *method_toydisasm(PyObject *self, PyObject *args)
         byte1 = (ram_p->prog_mem[iii] & 0xFF00) >> 8;
 
         instr_p->opcode = (byte1 & 0xF0) >> 4;
-        printf("%X\n", instr_p->opcode);
         switch(instr_p->opcode) {
             case OP_HALT:
                 sprintf(tmp, "%d | halt\n", iii+1);
