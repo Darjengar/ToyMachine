@@ -17,7 +17,7 @@ program and prints it in terminal.
 ## TODO
 - [x] Write a TOY assembler (TOY assembly -> TOY machine code)
 - [x] Write a Python API with GUI
-- [ ] Refactoring
+- [x] Refactoring
 - [x] Write a TOY machine documentation
 - [x] Add some TOY example programs
 
