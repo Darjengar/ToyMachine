@@ -5,32 +5,49 @@
 #include <string.h>
 #include <stdlib.h>
 
+#include "util.h"
+#include "toy.h"
+
 #define MAX_LINE_LENGTH 64
 
 int get_regnum(char*);
-char *pad8(unsigned char num);
-char *pad16(unsigned short num);
-void show_mem(unsigned short mem[], int size);
-void format(char*[], int, unsigned short[], int, int);
+void set_toyop(char*[], int, unsigned short int[], int, int);
+void print_usage();
 
 int main(int argc, char *argv[])
 {
-    if (argc != 2) {
-        printf("Error\n");
-        return -1;
+    char *prog = argv[0];
+
+    if (argc > 3) {
+        fprintf(stderr, "%s: Error: Too many arguments!\n", prog);
+        print_usage();
+        exit(-1);
+    }
+    else if (argc < 3) {
+        fprintf(stderr, "%s: Error: Too few arguments!\n", prog);
+        print_usage();
+        exit(-1);
     }
     else {
         char *filename = argv[1];
+        char *outname = argv[2];
         char line[MAX_LINE_LENGTH] = {0};
         char *tmp;
-        FILE *fp = fopen(filename, "r");
+        FILE *fp = NULL;
+
+        if ((fp = fopen(filename, "r")) == NULL) {
+            fprintf(
+                stderr, "%s: Error: Can't open program %s!\n",
+                prog, filename);
+            exit(-1);
+        }
+
         char *op[4] = {};
-        unsigned short program[256] = {0};
-        int iii = 16;
+        unsigned short int program[MEM_SIZE] = {0};
+        int iii = MEM_PROG_START;
         int num_lines = 0;
         while(fgets(line, MAX_LINE_LENGTH, fp)) {
             num_lines++;
-            printf("%s", line);
             tmp = strtok(line, " ");
             int jjj = 0;
             while(tmp != NULL) {
@@ -43,67 +60,75 @@ int main(int argc, char *argv[])
                 program[iii] = 0;
             }
             else if (strcmp(op[0],"add") == 0) {
-                format(op, 1, program, iii, 1);
+                set_toyop(op, OP_ADD, program, iii, 1);
             }
             else if (strcmp(op[0],"sub") == 0) {
-                format(op, 2, program, iii, 1);
+                set_toyop(op, OP_SUB, program, iii, 1);
             }
             else if (strcmp(op[0],"and") == 0) {
-                format(op, 3, program, iii, 1);
+                set_toyop(op, OP_AND, program, iii, 1);
             }
             else if (strcmp(op[0],"xor") == 0) {
-                format(op, 4, program, iii, 1);
+                set_toyop(op, OP_XOR, program, iii, 1);
             }
             else if (strcmp(op[0],"shl") == 0) {
-                format(op, 5, program, iii, 1);
+                set_toyop(op, OP_SHL, program, iii, 1);
             }
             else if (strcmp(op[0],"shr") == 0) {
-                format(op, 6, program, iii, 1);
+                set_toyop(op, OP_SHR, program, iii, 1);
             }
             else if (strcmp(op[0], "ldaddr") == 0) {
-                format(op, 7, program, iii, 2);
+                set_toyop(op, OP_LDADDR, program, iii, 2);
             }
             else if (strcmp(op[0],"ld") == 0) {
-                format(op, 8, program, iii, 2);
+                set_toyop(op, OP_LD, program, iii, 2);
             }
             else if (strcmp(op[0],"str") == 0) {
-                format(op, 9, program, iii, 2);
+                set_toyop(op, OP_STR, program, iii, 2);
             }
             else if (strcmp(op[0],"ldi") == 0) {
-                program[iii] = 10<<12 | (get_regnum(op[1])<<8)
+                program[iii] = OP_LDI<<12 | (get_regnum(op[1])<<8)
                         | get_regnum(op[2]);
             }
             else if (strcmp(op[0],"stri") == 0) {
-                program[iii] = 11<<12 | (get_regnum(op[1])<<8)
+                program[iii] = OP_STRI<<12 | (get_regnum(op[1])<<8)
                         | get_regnum(op[2]);
             }
             else if (strcmp(op[0],"bz") == 0) {
-                format(op, 12, program, iii, 2);
+                set_toyop(op, OP_BZ, program, iii, 2);
             }
             else if (strcmp(op[0],"bp") == 0) {
-                format(op, 13, program, iii, 2);
+                set_toyop(op, OP_BP, program, iii, 2);
             }
             else if (strcmp(op[0],"jmpreg") == 0) {
-                program[iii] = 14<<12 | (get_regnum(op[1])<<8);
+                program[iii] = OP_JMPREG<<12 | (get_regnum(op[1])<<8);
             }
             else if (strcmp(op[0],"jmpl") == 0) {
-                format(op, 15, program, iii, 2);
+                set_toyop(op, OP_JMPL, program, iii, 2);
             }
             iii++;
         }
         printf("\n");
-        show_mem(program, 256);
-        unsigned char *program_file = calloc(16 + num_lines, sizeof(unsigned short));
-        FILE *fp2 = fopen("program.bin", "w");
-        /*memcpy(program_file, program, 2*(16 + num_lines * sizeof(unsigned short)));*/
+        FILE *fp2 = NULL;
+        strcat(outname, ".bin");
+        if ((fp2 = fopen(outname, "w")) == NULL) {
+            fprintf(stderr, "%s: Error: Can't open %s!", prog, outname);
+            print_usage();
+            exit(-1);
+        }
         for (int iii = 0; iii < 16 + num_lines; iii++) {
             putc((program[iii] & 0xFF00) >> 8, fp2);
             putc((program[iii] & 0x00FF), fp2);
         }
-        free(program_file);
         fclose(fp);
         fclose(fp2);
     }
+    exit(0);
+}
+
+void print_usage() {
+    printf(
+        "Usage: toyasm filename outname\nfilename : *.toy\noutname : name without suffix\n");
 }
 
 int get_regnum(char *reg)
@@ -158,71 +183,9 @@ int get_regnum(char *reg)
     }
 }
 
-void show_mem(unsigned short mem[], int size)
-{
-    printf("----------------------------------------------\n");
-    printf("| Memory                                     |\n");
-    printf("----------------------------------------------\n");
-    char *temp;
-    temp = pad16(0);
-    printf("%s | ", temp);
-    free(temp);
-    for (int iii = 0; iii < size; iii++) {
-        if (iii+1 == size) {
-            /*printf("%s ", pad8((mem[iii] & 0xFF00)
-                            >> 8));*/
-            temp = pad16(mem[iii]);
-            printf("%s\n", temp);
-            free(temp);
-        }
-        else if ((iii+1) % 8 == 0) {
-            temp = pad16(mem[iii]);
-            printf("%s\n", temp);
-            free(temp);
-            temp = pad16(iii+1);
-            printf("%s | ", temp);
-            free(temp);
-        }
-        else {
-            temp = pad16(mem[iii]);
-            printf("%s ", temp);
-            free(temp);
-        }
-    }
-    printf("----------------------------------------------\n");
-}
-
-char *pad8(unsigned char num)
-{
-    char *result = malloc(3);
-    if (num <= 15) {
-        sprintf(result, "0%X", num);
-    }
-    else if (num <= 255) {
-        sprintf(result, "%X", num);
-    }
-    return result;
-}
-
-char *pad16(unsigned short num)
-{
-    char *result = malloc(5);
-    if (num <= 15) {
-        sprintf(result, "000%X", num);
-    }
-    else if (num <= 255) {
-        sprintf(result, "00%X", num);
-    }
-    else if (num <= 4095) {
-        sprintf(result, "0%X", num);
-    }
-    else {
-        sprintf(result, "%X", num);
-    }
-    return result;
-}
-
-void format(char* op[4], int opcode, unsigned short program[256], int pos, int fmtnum)
+void set_toyop(
+        char* op[4], int opcode, unsigned short int program[MEM_SIZE],
+        int pos, int fmtnum)
 {
     if (fmtnum == 1) {
         program[pos] = opcode<<12 | (get_regnum(op[1])<<8)

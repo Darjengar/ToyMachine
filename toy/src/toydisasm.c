@@ -142,7 +142,7 @@ int *toydisasm(const char *filepath)
         case 0xF:
             scan_opcode2(byte1, byte2, &dst, &addr);
             printf("jmpl\n");
-            printf("jmpl [R%X], 0x%s\n", dst, pad8(addr));
+            printf("jmpl R%X, 0x%s\n", dst, pad8(addr));
             break;
         }
     }
