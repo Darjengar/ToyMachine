@@ -39,6 +39,6 @@ python3 toy/setup.py install
 ```
 ### Run Toy Machine
 ```bash
-python3 toy/toymachine.py
+python3 toy/ToyMachine.py
 ```
 
