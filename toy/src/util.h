@@ -36,6 +36,6 @@ char *pad16(unsigned short int num);
  * @param size 
  * @return char* 
  */
-char *show_mem(unsigned short int mem[], int size);
+char *show_mem(unsigned short int mem[], int size, int start_num);
 
 #endif

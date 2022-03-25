@@ -46,7 +46,7 @@ char *pad16(unsigned short int num)
     return result;
 }
 
-char *show_mem(unsigned short int mem[], int size)
+char *show_mem(unsigned short int mem[], int size, int start_num)
 {
     char *mem_str = malloc(50);
     char *out_str = malloc(10000);
@@ -58,7 +58,7 @@ char *show_mem(unsigned short int mem[], int size)
     sprintf(mem_str, "%s | ", temp);
     strcat(out_str, mem_str);
     free(temp);
-    for (int iii = 0; iii < size; iii++) {
+    for (int iii = start_num; iii < size; iii++) {
         if (iii+1 == size) {
             temp = pad16(mem[iii]);
             sprintf(mem_str, "%s\n", temp);

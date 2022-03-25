@@ -70,12 +70,9 @@ static PyObject *method_start_toy(PyObject *self, PyObject *args)
         curr_state.pc++;
     }
 
-    //PyObject *py_result_str = PyUnicode_FromString(result_str);
-    //free(result_str);
     return Py_BuildValue(
         "iiiii", flags_p->halt_flag, flags_p->input_flag,
         flags_p->output_flag, flags_p->jmp_flag, curr_state.pc);
-    //return 0;
 }
 
 static PyObject *method_restart_toy(PyObject *self, PyObject *args)
@@ -86,7 +83,7 @@ static PyObject *method_restart_toy(PyObject *self, PyObject *args)
         return NULL;
     }
 
-    reset_state(&curr_state);
+    reset_state(&curr_state, FALSE);
     result_str = show_state(&curr_state);
 
     PyObject *py_result_str = PyUnicode_FromString(result_str);
@@ -113,7 +110,7 @@ static PyObject *method_stop_toy(PyObject *self, PyObject *args)
         return NULL;
     }
 
-    reset_state(&curr_state);
+    reset_state(&curr_state, FALSE);
 
     Py_INCREF(Py_None);
     return Py_None;
@@ -125,17 +122,7 @@ static PyObject *method_reset_toy(PyObject *self, PyObject *args)
         return NULL;
     }
 
-    curr_state.pc = MEM_PROG_START;
-    curr_state.flags_p->halt_flag = 0;
-    curr_state.flags_p->input_flag = 0;
-    curr_state.flags_p->output_flag = 0;
-    curr_state.flags_p->jmp_flag = 0;
-    for (int iii = 0; iii < MEM_SIZE; iii++) {
-        curr_state.mem[iii] = 0;
-    }
-    for (int iii = 0; iii < NUM_REGS; iii++) {
-        curr_state.regs[iii] = 0;
-    }
+    reset_state(&curr_state, TRUE);
 
     Py_INCREF(Py_None);
     return Py_None;
@@ -144,6 +131,7 @@ static PyObject *method_reset_toy(PyObject *self, PyObject *args)
 static PyObject *method_toydisasm(PyObject *self, PyObject *args)
 {
     ToyInstr *instr_p = curr_state.instr_p;
+    ToyRam *ram_p = curr_state.ram_p;
 
     char *result_str = malloc(5000);
     strcpy(result_str, "");
@@ -156,90 +144,90 @@ static PyObject *method_toydisasm(PyObject *self, PyObject *args)
 
     unsigned char byte1;
 
-    int iii = MEM_PROG_START;
-    while(iii != curr_program.eof) {
-        byte1 = (curr_state.mem[iii] & 0xFF00) >> 8;
+    int iii = 0;
+    while(iii != curr_state.program_p->eof) {
+        byte1 = (ram_p->prog_mem[iii] & 0xFF00) >> 8;
 
         instr_p->opcode = (byte1 & 0xF0) >> 4;
         printf("%X\n", instr_p->opcode);
         switch(instr_p->opcode) {
-            case 0x0:
-                sprintf(tmp, "%d | halt\n", iii+1 - MEM_PROG_START);
+            case OP_HALT:
+                sprintf(tmp, "%d | halt\n", iii+1);
                 strcat(result_str, tmp);
                 break;
-            case 0x1:
+            case OP_ADD:
                 scan_opcode(11, &curr_state, iii);
-                sprintf(tmp, "%d | add R%X, R%X, R%X\n", iii+1 - MEM_PROG_START, instr_p->u1.dst, instr_p->u2.src.src1, instr_p->u2.src.src2);
+                sprintf(tmp, "%d | add R%X, R%X, R%X\n", iii+1, instr_p->u1.dst, instr_p->u2.src.src1, instr_p->u2.src.src2);
                 strcat(result_str, tmp);
                 break;
-            case 0x2:
+            case OP_SUB:
                 scan_opcode(11, &curr_state, iii);
-                sprintf(tmp, "%d | sub R%X, R%X, R%X\n", iii+1 - MEM_PROG_START, instr_p->u1.dst, instr_p->u2.src.src1, instr_p->u2.src.src2);
+                sprintf(tmp, "%d | sub R%X, R%X, R%X\n", iii+1, instr_p->u1.dst, instr_p->u2.src.src1, instr_p->u2.src.src2);
                 strcat(result_str, tmp);
                 break;
-            case 0x3:
+            case OP_AND:
                 scan_opcode(11, &curr_state, iii);
-                sprintf(tmp, "%d | and R%X, R%X, R%X\n", iii+1 - MEM_PROG_START, instr_p->u1.dst, instr_p->u2.src.src1, instr_p->u2.src.src2);
+                sprintf(tmp, "%d | and R%X, R%X, R%X\n", iii+1, instr_p->u1.dst, instr_p->u2.src.src1, instr_p->u2.src.src2);
                 strcat(result_str, tmp);
                 break;
-            case 0x4:
+            case OP_XOR:
                 scan_opcode(11, &curr_state, iii);
-                sprintf(tmp, "%d | xor R%X, R%X, R%X\n", iii+1 - MEM_PROG_START, curr_instr.u1.dst, instr_p->u2.src.src1, instr_p->u2.src.src2);
+                sprintf(tmp, "%d | xor R%X, R%X, R%X\n", iii+1, curr_instr.u1.dst, instr_p->u2.src.src1, instr_p->u2.src.src2);
                 strcat(result_str, tmp);
                 break;
-            case 0x5:
+            case OP_SHL:
                 scan_opcode(11, &curr_state, iii);
-                sprintf(tmp, "%d | shl R%X, R%X, R%X\n", iii+1 - MEM_PROG_START, instr_p->u1.dst, instr_p->u2.src.src1, instr_p->u2.src.src2);
+                sprintf(tmp, "%d | shl R%X, R%X, R%X\n", iii+1, instr_p->u1.dst, instr_p->u2.src.src1, instr_p->u2.src.src2);
                 strcat(result_str, tmp);
                 break;
-            case 0x6:
+            case OP_SHR:
                 scan_opcode(11, &curr_state, iii);
-                sprintf(tmp, "%d | shr R%X, R%X, R%X\n", iii+1 - MEM_PROG_START, instr_p->u1.dst, instr_p->u2.src.src1, instr_p->u2.src.src2);
+                sprintf(tmp, "%d | shr R%X, R%X, R%X\n", iii+1, instr_p->u1.dst, instr_p->u2.src.src1, instr_p->u2.src.src2);
                 strcat(result_str, tmp);
                 break;
-            case 0x7:
+            case OP_LDADDR:
                 scan_opcode(21, &curr_state, iii);
-                sprintf(tmp, "%d | ldaddr R%X, 0x%s\n", iii+1 - MEM_PROG_START, instr_p->u1.dst, pad8(instr_p->u2.addr));
+                sprintf(tmp, "%d | ldaddr R%X, 0x%s\n", iii+1, instr_p->u1.dst, pad8(instr_p->u2.addr));
                 strcat(result_str, tmp);
                 break;
-            case 0x8:
+            case OP_LD:
                 scan_opcode(21, &curr_state, iii);
-                sprintf(tmp, "%d | ld R%X, [0x%s]\n", iii+1 - MEM_PROG_START, instr_p->u1.dst, pad8(instr_p->u2.addr));
+                sprintf(tmp, "%d | ld R%X, [0x%s]\n", iii+1, instr_p->u1.dst, pad8(instr_p->u2.addr));
                 strcat(result_str, tmp);
                 break;
-            case 0x9:
+            case OP_STR:
                 scan_opcode(22, &curr_state, iii);
-                sprintf(tmp, "%d | str R%X, [0x%s]\n", iii+1 - MEM_PROG_START, instr_p->u1.src, pad8(instr_p->u2.addr));
+                sprintf(tmp, "%d | str R%X, [0x%s]\n", iii+1, instr_p->u1.src, pad8(instr_p->u2.addr));
                 strcat(result_str, tmp);
                 break;
-            case 0xA:
+            case OP_LDI:
                 scan_opcode(12, &curr_state, iii);
-                sprintf(tmp, "%d | ldi R%X, [R%X]\n", iii+1 - MEM_PROG_START, instr_p->u1.dst, instr_p->u2.src.src2);
+                sprintf(tmp, "%d | ldi R%X, [R%X]\n", iii+1, instr_p->u1.dst, instr_p->u2.src.src2);
                 strcat(result_str, tmp);
                 break;
-            case 0xB:
+            case OP_STRI:
                 scan_opcode(12, &curr_state, iii);
-                sprintf(tmp, "%d | stri R%X, [R%X]\n", iii+1 - MEM_PROG_START,  instr_p->u1.dst, instr_p->u2.src.src2);
+                sprintf(tmp, "%d | stri R%X, [R%X]\n", iii+1,  instr_p->u1.dst, instr_p->u2.src.src2);
                 strcat(result_str, tmp);
                 break;
-            case 0xC:
+            case OP_BZ:
                 scan_opcode(22, &curr_state, iii);
-                sprintf(tmp, "%d | bz R%X, 0x%s\n", iii+1 - MEM_PROG_START, instr_p->u1.src, pad8(instr_p->u2.addr));
+                sprintf(tmp, "%d | bz R%X, 0x%s\n", iii+1, instr_p->u1.src, pad8(instr_p->u2.addr));
                 strcat(result_str, tmp);
                 break;
-            case 0xD:
+            case OP_BP:
                 scan_opcode(22, &curr_state, iii);
-                sprintf(tmp, "%d | bp R%X, 0x%s\n", iii+1 - MEM_PROG_START, instr_p->u1.src, pad8(instr_p->u2.addr));
+                sprintf(tmp, "%d | bp R%X, 0x%s\n", iii+1, instr_p->u1.src, pad8(instr_p->u2.addr));
                 strcat(result_str, tmp);
                 break;
-            case 0xE:
+            case OP_JMPREG:
                 instr_p->u1.dst = byte1 & 0x0F;
-                sprintf(tmp, "%d | jmpreg [R%X]\n", iii+1 - MEM_PROG_START, instr_p->u1.dst);
+                sprintf(tmp, "%d | jmpreg [R%X]\n", iii+1, instr_p->u1.dst);
                 strcat(result_str, tmp);
                 break;
-            case 0xF:
+            case OP_JMPL:
                 scan_opcode(21, &curr_state, iii);
-                sprintf(tmp, "%d | jmpl [R%X], 0x%s\n", iii+1 - MEM_PROG_START, instr_p->u1.dst, pad8(instr_p->u2.addr));
+                sprintf(tmp, "%d | jmpl R%X, 0x%s\n", iii+1, instr_p->u1.dst, pad8(instr_p->u2.addr));
                 strcat(result_str, tmp);
                 break;
         }
@@ -258,8 +246,8 @@ static PyObject *method_input_toy(PyObject *self, PyObject *args)
         return NULL;
     }
 
-    curr_state.mem[MEM_IO] = value;
-    curr_state.regs[curr_state.instr_p->u1.dst] = curr_state.mem[MEM_IO];
+    curr_state.ram_p->io = value;
+    curr_state.regs[curr_state.instr_p->u1.dst] = curr_state.ram_p->io;
     curr_state.flags_p->input_flag = 0;
 
     Py_INCREF(Py_None);
@@ -272,7 +260,7 @@ static PyObject *method_output_toy(PyObject *self, PyObject *args)
         return NULL;
     }
     curr_state.flags_p->output_flag = 0;
-    return PyLong_FromLong(curr_state.regs[curr_instr.u1.src]);
+    return PyLong_FromLong(curr_state.regs[curr_state.instr_p->u1.src]);
 }
 
 static PyMethodDef ToyMethods[] = {

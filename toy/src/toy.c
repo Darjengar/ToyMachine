@@ -211,21 +211,31 @@ char *show_state(ToyState *curr_state_p)
 
     char *result_str = malloc(20000);
 
-    strcpy(result_str, show_regs(&curr_state_p));
-    strcat(result_str, show_mem(ram_p->data_mem, MEM_DATA_SIZE));
-    strcat(result_str, show_mem(ram_p->prog_mem, MEM_PROG_SIZE));
+    strcpy(result_str, show_regs(curr_state_p));
+    strcat(result_str, show_mem(ram_p->data_mem, MEM_DATA_SIZE, 0));
+    strcat(result_str, show_mem(ram_p->prog_mem, MEM_PROG_SIZE, MEM_PROG_START));
 
     return result_str;
 }
 
-void reset_state(ToyState *state_p)
+void reset_state(ToyState *state_p, Boolean res_ram)
 {
     state_p->pc = MEM_PROG_START;
     state_p->flags_p->halt_flag = 0;
     state_p->flags_p->input_flag = 0;
     state_p->flags_p->output_flag = 0;
     state_p->ram_p->io = 0;
+
     for (int iii = 0; iii < NUM_REGS; iii++) {
         state_p->regs[iii] = 0;
+    }
+
+    if (res_ram == TRUE) {
+        for (int iii = 0; iii < MEM_DATA_SIZE; iii++) {
+            state_p->ram_p->data_mem[iii] = 0;
+        }
+        for (int iii = 0; iii < MEM_PROG_SIZE; iii++) {
+            state_p->ram_p->prog_mem[iii] = 0;
+        }
     }
 }
